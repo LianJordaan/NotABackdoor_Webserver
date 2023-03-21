@@ -83,7 +83,7 @@ app.get("/server/:name", (req, res) => {
 	});
 	html +=
 		`</div></body>` +
-		fs.readFileSync("./.data/assests/filecss", "utf8") +
+		fs.readFileSync("./.data/assests/css", "utf8") +
 		`<script>` +
 		fs.readFileSync("./.data/assests/filejs", "utf8") +
 		`</script>` +
@@ -120,7 +120,9 @@ app.get("/server/:name/*", (req, res) => {
 
 		if (!matchingItem) {
 			if (!matchingItem1) {
-				res.status(404).send("Path not found");
+								let html = fs.readFileSync("./.data/assests/notFound-html", "utf8");
+				html += `<style>` + fs.readFileSync("./.data/assests/css", "utf8") + `</style>`;
+				res.status(404).send(html);
 				return;
 			}
 		}
@@ -158,7 +160,7 @@ app.get("/server/:name/*", (req, res) => {
 				}/${item.name}'>${item.name}</a></div>`;
 			}
 		});
-		html += `</div></body>` + fs.readFileSync("./.data/assests/filecss", "utf8") + `<script>` + fs.readFileSync("./.data/assests/filejs", "utf8") + `</script></html>`;
+		html += `</div></body>` + fs.readFileSync("./.data/assests/css", "utf8") + `<script>` + fs.readFileSync("./.data/assests/filejs", "utf8") + `</script></html>`;
 		res.send(html);
 	} else if (tval) {
 		if (currentDir === ".") {
@@ -173,34 +175,51 @@ app.get("/server/:name/*", (req, res) => {
 			html += fs.readFileSync("./.data/assests/editor-html-2", "utf8");
 			html += fs.readFileSync(path.join("./.data/servers/", serverName, "/", currentDir, pathSegments[pathSegments.length - 1]), "utf8");
 			html += fs.readFileSync("./.data/assests/editor-html-3", "utf8");
-			html += `<style>` + fs.readFileSync("./.data/assests/editor-css", "utf8") + `</style>`;
+			html += `<style>` + fs.readFileSync("./.data/assests/css", "utf8") + `</style>`;
 			html += `<script>` + fs.readFileSync("./.data/assests/editor-js", "utf8") + `</script>`;
 
 			res.send(html);
 		} else {
-			res.send(fs.readFileSync("./.data/assests/filenotready", "utf8"));
-			const filePath = './.data/log.txt'; // replace with the path to your file
-			const lineToAdd = path.join(currentDir, pathSegments[pathSegments.length - 1]);
 
-			fs.readFile(filePath, 'utf8', (err, data) => {
-			  if (err) {
-			    console.error(err);
-			    return;
-			  }
-		  
-			  // Check if lineToAdd already exists in the file
-			  if (data.includes(`${lineToAdd}\n`)) {
-			    return;
-			  }
-		  
-			  // Add the line to the file
-			  fs.appendFile(filePath, `${lineToAdd}\n`, (err) => {
-			    if (err) {
-			      console.error(err);
-			      return;
-			    }
-			  });
-			});
+			let pathToCheck = path.join(currentDir, pathSegments[pathSegments.length - 1]).toString();
+
+			pathToCheck.replace("\\", "\\\\");
+
+			pathToCheck.replace("/", "\\\\");
+
+			pathToCheck = `\\\\` + pathToCheck; 
+
+			let fileList = fs.readFileSync(path.join(`.data`, `servers`, serverName + `.txt`), "utf8").toString();
+
+			if (!fileList.includes(`"path":"` + pathToCheck + `"`)) {
+				let html = fs.readFileSync("./.data/assests/notFound-html", "utf8");
+				html += `<style>` + fs.readFileSync("./.data/assests/css", "utf8") + `</style>`;
+				res.send(html);
+			} else {
+				res.send(fs.readFileSync("./.data/assests/filenotready", "utf8"));
+				const filePath = './.data/log.txt'; // replace with the path to your file
+				const lineToAdd = path.join(currentDir, pathSegments[pathSegments.length - 1]);
+
+				fs.readFile(filePath, 'utf8', (err, data) => {
+				  if (err) {
+				    console.error(err);
+				    return;
+				  }
+			  
+				  // Check if lineToAdd already exists in the file
+				  if (data.includes(`${lineToAdd}\n`)) {
+				    return;
+				  }
+			  
+				  // Add the line to the file
+				  fs.appendFile(filePath, `${lineToAdd}\n`, (err) => {
+				    if (err) {
+				      console.error(err);
+				      return;
+				    }
+				  });
+				});
+			}
 
 		}
 	}
@@ -208,6 +227,8 @@ app.get("/server/:name/*", (req, res) => {
 
 app.post("/filesystem", (req, res) => {
 	let body = "";
+
+	//console.log(req.headers.type);
 
 	req.on("data", (chunk) => {
 		body += chunk.toString();
