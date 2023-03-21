@@ -1,0 +1,95 @@
+<style>
+  .foldericon {
+    color: #c996cc;
+    margin-right: 10px;
+    height: 1em;
+    vertical-align: -0.125em;
+    display: inline-block;
+    width: 1em;
+  }
+  .fileicon {
+    color: #c996cc;
+    margin-right: 10px;
+    height: 1em;
+    vertical-align: -0.125em;
+    display: inline-block;
+    width: 1em;
+  }
+  .file {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    background-color: #262339;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  .file:hover {
+    background-color: hsla(248, 18%, 22%, 1);
+    transform: scale(1.005);
+    cursor: pointer;
+  }
+  body {
+    background-color: #1e182e;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+      "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+      "Noto Color Emoji";
+    letter-spacing: 0.015em;
+  }
+  a {
+    color: #c996cc;
+    cursor: pointer;
+  }
+  ::-webkit-scrollbar {
+    background: none;
+    width: 16px;
+    height: 16px;
+  }
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    border-width: 0px 4px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0);
+    border-image: initial;
+    border-radius: 9px / 4px;
+    box-shadow: #0f031d 0px 0px 0px 1px inset, #2f2649 0px 0px 0px 4px inset;
+  }
+  ::-webkit-scrollbar-track-piece {
+    margin: 4px 0px;
+  }
+
+  .top-text {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .top-text h1 {
+    color: #916bbf;
+    font-family: "Josefin Sans";
+  }
+
+  .back {
+    border-radius: 10px;
+    position: absolute;
+    left: 1%;
+    top: 2.5%;
+    height: 7%;
+    width: 2.5%;
+    transition: transform 0.3s, background-color 0.2s;
+    text-align: center;
+    color: #bb9ede;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .back svg {
+    vertical-align: -30%;
+  }
+
+  .back:hover {
+    transform: scale(1.05);
+    background-color: #ffffff10;
+  }
+</style>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>NotABackdoor</title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
+    </head>
+    <body style="background-color: #1e182e;">
+        <div class="center">
+            <h1>Sorry!</h1>
+            <h2>This file is currently unavailable. Check back in a couple seconds!</h2>
+            <div class="nofile-back">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" style="fill: #bb9ede; --darkreader-inline-fill:#f2f0ed;" data-darkreader-inline-fill=""><path d="m12.707 7.707-1.414-1.414L5.586 12l5.707 5.707 1.414-1.414L8.414 12z"></path><path d="M16.293 6.293 10.586 12l5.707 5.707 1.414-1.414L13.414 12l4.293-4.293z"></path></svg> Back
+            </div>
+        </div>
+        <script src="nofile.js"></script>
+    </body>
+    <script>
+        const back = document.querySelector(".nofile-back");
+        back.addEventListener('click', (e) => {
+            history.back();
+        });
+        setInterval(() => {
+          location.reload();
+        }, 5000);
+    </script>
+    <style>
+        .center {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        body {
+            background-color: #1e182e;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            letter-spacing: 0.015em;
+            margin: 0;
+        }
+        body, html {
+            height: 100%;
+        }
+        .center h1 {
+            color: #916BBF;
+            font-family: 'Montserrat';
+        }
+        .center h2 {
+            font-family: 'Ubuntu';
+            color: #C996CC;
+            font-style: italic;
+        }
+
+        .nofile-back {
+            color: #bb9ede;
+            font-family: 'Ubuntu';
+            cursor: pointer;
+            transition: transform .3s, background-color .2s;
+            border-radius: 10px;
+            height: 50px;
+            width: 50px;
+            text-align: center;
+        }
+
+        .nofile-back:hover {
+            transform: scale(1.05);
+            background-color: #ffffff10;
+        }
+    </style>
+</html>

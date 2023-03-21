@@ -1,0 +1,17 @@
+</textarea>
+                    <div></div>
+                </div>
+            </div>
+            <div class="credits">
+                <p>Text Editor by <a href="https://github.com/EsziL/">Eszi</a></p>
+            </div>
+        </div>
+        
+            <div class="save">
+                <button>SAVE</button>
+                <div></div>
+            </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>
