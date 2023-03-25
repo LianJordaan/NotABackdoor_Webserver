@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const zlib = require("zlib");
 const path = require("path");
-const fs = require("fs");
+const fs = require('fs-extra');
 require("dotenv").config();
 
 const app = express();
@@ -37,10 +37,10 @@ app.get("/servers", (req, res) => {
 	let files = fs.readdirSync(serverDir);
 	let servers = files
 		.filter((file) => {
-			return file.endsWith(".txt");
+			return file.endsWith("");
 		})
 		.map((file) => {
-			return file.replace(".txt", "");
+			return file.replace("", "");
 		});
 	let html = "<html><body><ul>";
 	servers.forEach((server) => {
@@ -53,7 +53,7 @@ app.get("/servers", (req, res) => {
 app.get("/server/:name", (req, res) => {
 	let serverDir = "./.data/servers/";
 	let serverName = req.params.name;
-	let serverFile = serverDir + serverName + ".txt";
+	let serverFile = path.join(serverDir, serverName, "structure.txt");
 	if (!fs.existsSync(serverFile)) {
 		res.status(404).send("Server not found");
 		return;
@@ -94,7 +94,7 @@ app.get("/server/:name", (req, res) => {
 app.get("/server/:name/*", (req, res) => {
 	let serverDir = "./.data/servers/";
 	let serverName = req.params.name;
-	let serverFile = serverDir + serverName + ".txt";
+	let serverFile = path.join(serverDir, serverName, "structure.txt");
 	if (!fs.existsSync(serverFile)) {
 		res.status(404).send("Server not found");
 		return;
@@ -178,6 +178,10 @@ app.get("/server/:name/*", (req, res) => {
 			html += `<style>` + fs.readFileSync("./.data/assests/css", "utf8") + `</style>`;
 			html += `<script>` + fs.readFileSync("./.data/assests/editor-js", "utf8") + `</script>`;
 
+			let fileDir = path.join("./.data/servers/", serverName, "files", currentDir, pathSegments[pathSegments.length - 1]);
+
+			startTimer(fileDir, 30000, keepFile);
+
 			res.send(html);
 		} else {
 
@@ -188,7 +192,7 @@ app.get("/server/:name/*", (req, res) => {
 
 			pathToCheck = `\\\\${pathToCheck}`;
 			
-			let fileList = fs.readFileSync(path.join(`.data`, `servers`, serverName + `.txt`), "utf8").toString();
+			let fileList = fs.readFileSync(path.join(`.data`, `servers`, serverName, `structure.txt`), "utf8").toString();
 
 			if (!fileList.includes(`"path":"` + pathToCheck + `"`)) {
 				let html = fs.readFileSync("./.data/assests/notFound-html", "utf8");
@@ -230,7 +234,7 @@ app.get("/server/:name/*", (req, res) => {
 	}
 });
 
-app.post("/filesystem", (req, res) => {
+app.post("/api", (req, res) => {
 	let body = "";
 
 	//console.log(req.headers.type);
@@ -248,8 +252,8 @@ app.post("/filesystem", (req, res) => {
 			let serverName = req.headers.server;
 
 			// Create the path to the file
-			let fileName = serverName + ".txt";
-			let filePath = path.join("./.data/servers/", fileName);
+			let fileName = "structure.txt";
+			let filePath = path.join("./.data/servers/", serverName, fileName);
 
 			// Write the data to the file
 			fs.writeFile(filePath, data, (err) => {
@@ -258,7 +262,7 @@ app.post("/filesystem", (req, res) => {
 				}
 			});
 
-			res.send(fs.readFileSync("./.data/servers/" + fileName.replace(".txt", "") + "/log.txt", "utf8"));
+			res.send(fs.readFileSync("./.data/servers/" + serverName + "/log.txt", "utf8"));
 		} else if (req.headers.type === "File") {
 
 			let base64 = Buffer.from(body, "base64");
@@ -310,13 +314,7 @@ app.post("/filesystem", (req, res) => {
 
 
 			res.sendStatus(201);
-			setTimeout(() => {
-				try {
-				  	fs.unlinkSync(newfilePath);
-				} catch (error) {
-
-				}
-			}, 30000);
+			startTimer(newfilePath, 30000, keepFile);
 		} else {
 			res.sendStatus(404);
 		}
@@ -337,7 +335,7 @@ function deleteEmptyDirs(path) {
         if (err) {
           console.error(err);
         } else {
-          console.log(`Deleted empty directory: ${path}`);
+          //console.log(`Deleted empty directory: ${path}`);
         }
       });
       return;
@@ -358,3 +356,29 @@ setInterval(() => {
   const rootPath = "./";
   deleteEmptyDirs(rootPath);
 }, 50);
+
+let timers = {};
+
+function startTimer(timerName, timeInMs, callback) {
+  clearTimeout(timers[timerName]);
+  timers[timerName] = setTimeout(() => {
+    callback(timerName);
+    delete timers[timerName];
+  }, timeInMs);
+}
+
+// Example usage
+function keepFile(fileName) {
+	try {
+		fs.unlinkSync(path.join(fileName));
+	} catch (error) {}
+  	//console.log("file: `" + fileName + "` deleted");
+}
+
+
+
+let serverDir = "./.data/servers/";
+let servers = fs.readdirSync(serverDir);
+servers.forEach((server) => {
+	fs.removeSync(path.join(serverDir, server, "files/"));
+});
